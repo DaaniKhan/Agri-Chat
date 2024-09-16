@@ -58,8 +58,8 @@ async function sendWhatsappMessage(phone_number, message) {
     }
 }
 
-cron.schedule("* * * * *", () => {
-    daily_update_time = "45"
+cron.schedule("50 11 * * *", () => {
+    daily_update_time = "52"
     console.log("Updated Time")
     console.log(daily_update_time + " 11 * * *")
 }, 
