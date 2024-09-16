@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
   res.send('Welcome to Railway Cron Job Server with Multiple Jobs');
 });
 
-
+let dailyJob;
 
 // Function to create and schedule the daily update cron job
 function scheduleDailyJob() {
@@ -49,7 +49,7 @@ scheduleDailyJob();
 // Cron job to update daily_update_time and reschedule the job
 cron.schedule("* * * * *", () => {
     // Update the daily_update_time dynamically
-    update_time = "05"; // New time value
+    update_time = "07"; // New time value
 
     
     // Reschedule the daily update job with the new time
