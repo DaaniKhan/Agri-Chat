@@ -21,6 +21,27 @@ app.get('/', (req, res) => {
 
 let dailyJob;
 
+// Cron job to update daily_update_time and reschedule the job
+cron.schedule("* * * * *", () => {
+    // Update the daily_update_time dynamically
+    update_time = "12"; // New time value
+
+    
+    // Reschedule the daily update job with the new time
+    if (daily_update_time != update_time){
+        daily_update_time = update_time
+        console.log("Updated Time to: " + daily_update_time);
+        scheduleDailyJob();
+    }
+    else{
+        console.log("No new time")
+    }
+}, 
+{
+    scheduled: true,
+    timezone: "Asia/Karachi"
+});
+
 // Function to create and schedule the daily update cron job
 function scheduleDailyJob() {
     // If there's an existing job, stop it before creating a new one
@@ -45,27 +66,6 @@ function scheduleDailyJob() {
 
 // Initial scheduling of the daily update job
 scheduleDailyJob();
-
-// Cron job to update daily_update_time and reschedule the job
-cron.schedule("* * * * *", () => {
-    // Update the daily_update_time dynamically
-    update_time = "07"; // New time value
-
-    
-    // Reschedule the daily update job with the new time
-    if (daily_update_time != update_time){
-        daily_update_time = update_time
-        console.log("Updated Time to: " + daily_update_time);
-        scheduleDailyJob();
-    }
-    else{
-        console.log("No new time")
-    }
-}, 
-{
-    scheduled: true,
-    timezone: "Asia/Karachi"
-});
 
 // Port for Express server
 const PORT = process.env.PORT || 3000;
