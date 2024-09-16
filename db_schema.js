@@ -29,6 +29,7 @@ User.init({
   country: DataTypes.STRING,
   language: DataTypes.STRING,
   thread_id: DataTypes.STRING,
+  update_time: DataTypes.STRING,
   created_at: {
     type: DataTypes.DATE,
     defaultValue: Sequelize.fn('NOW')
@@ -63,6 +64,7 @@ Message.init({
   },
   message: DataTypes.STRING,
   response: DataTypes.STRING,
+  actionable: DataTypes.STRING,
   created_at: {
     type: DataTypes.DATE,
     defaultValue: Sequelize.fn('NOW')

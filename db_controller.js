@@ -17,14 +17,14 @@ const pool = new Pool({
 
 
 // Add a new user to the database
-export async function addUser(name, address, phone, city, country, language, thread_id) {
+export async function addUser(name, address, phone, city, country, language, thread_id, update_time) {
   const query = `
-    INSERT INTO users (name, address, phone, city, country, language, thread_id, created_at, updated_at)
+    INSERT INTO users (name, address, phone, city, country, language, thread_id, update_time, created_at, updated_at)
     VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), NOW())
   `;
 
   try {
-    await pool.query(query, [name, address, phone, city, country, language, thread_id]);
+    await pool.query(query, [name, address, phone, city, country, language, thread_id, update_time]);
     console.log('User added successfully');
   } catch (error) {
     console.error('Error: Could Not Add User.', error);
@@ -77,14 +77,14 @@ export async function get10ReadingRecordsByUserID(user_id) {
 }
 
 // Add a conversation (message) to the database
-export async function addConversation(user_id, message, response) {
+export async function addConversation(user_id, message, response, actionable) {
   const query = `
-    INSERT INTO messages (user_id, message, response, created_at, updated_at)
+    INSERT INTO messages (user_id, message, response, actionable, created_at, updated_at)
     VALUES ($1, $2, $3, NOW(), NOW())
   `;
 
   try {
-    await pool.query(query, [user_id, message, response]);
+    await pool.query(query, [user_id, message, response, actionable]);
     console.log('Conversation added successfully');
   } catch (error) {
     console.error('Error: Could Not Add Conversation.', error);
