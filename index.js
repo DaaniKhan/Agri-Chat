@@ -60,6 +60,7 @@ let daily_update_time = ""
 
 cron.schedule(`* * * * *`, () => {
     daily_update_time = "40"
+    console.log("Updated Time")
 }, 
 {
     scheduled: true,
