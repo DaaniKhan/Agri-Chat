@@ -1,6 +1,7 @@
 import axios from "axios";
 import { addReadingRecord, addUser, get10ReadingRecords, getLanguage, addConversation, getThreadID, get10ReadingRecordsByUserID } from './db_controller.js';
 import { format } from 'date-fns';
+import dotenv from 'dotenv';
 
 // Main function to send daily update
 export async function sendDailyUpdate(phone) {
@@ -42,41 +43,34 @@ export async function sendDailyUpdate(phone) {
         // Define profiles based on user_id
         let profile = '';
         if (user_id === 1 || user_id === 3 || user_id === 4) {
-            profile = "A meticulous and detail-oriented individual, she holds a PhD in Computer Science with a specialization in Human-Computer Interaction. She is an instructor at a prestigious university and applies her rigorous academic mindset to her home farming activities. Growing blackberries in DHA, Lahore, Punjab, Pakistan, she dedicates daily attention to her crop, striving for the highest quality. Her interest in innovative techniques aligns with her commitment to successful and sustainable farming practices. Given her preference for efficiency, she values concise, 2-3 line responses from a chatbot to quickly address her queries and needs. She specifically seeks brief but actionable advice that she can put into practice, ensuring her time is used effectively";
+            profile = "A meticulous and detail-oriented individual, she holds a PhD in Computer Science with a specialization in Human-Computer Interaction. She is an instructor at a prestigious university and applies her rigorous academic mindset to her home farming activities. Growing mint in DHA, Lahore, Punjab, Pakistan, she dedicates daily attention to her crop, striving for the highest quality. Her interest in innovative techniques aligns with her commitment to successful and sustainable farming practices. Given her preference for efficiency, she values concise, 2-3 line responses from a chatbot to quickly address her queries and needs. She specifically seeks brief but actionable advice that she can put into practice, ensuring her time is used effectively";
         } else if (user_id === 2) {
             profile = "Prepare a message for a 45-year-old female from a low socio-economic background...";
         }
 
-        const system_prompt = `
-            You are an intelligent agricultural assistant designed to help users monitor and manage their crops effectively. Users will provide you with sensor data like moisture, temperature, electrical conductivity, pH, nitrogen (N), phosphorus (P), and potassium (K) levels for their field. They'll also let you know what crop they are growing, such as wheat, corn, or tomatoes.
+        const system_prompt = ` 
+            You are an agricultural assistant designed to help users monitor and manage their crops effectively. Users will provide sensor data like moisture, temperature, electrical conductivity, pH, nitrogen (N), phosphorus (P), and potassium (K) levels, along with the crop they're growing, such as wheat, corn, or tomatoes.
 
             When a user asks about the status of their crop, follow these steps:
 
-            1. First, recognize the specific crop the user mentions, such as wheat or corn.
-            2. Then, use the optimal ranges for that crop for each of the provided data points (moisture, temperature, electrical conductivity, pH, N, P, K).
-            3. Compare the user's sensor data with these optimal ranges. Point out where the data is within the ideal range and where it isn't.
-            4. If everything is within the optimal range, let the user know their crop is in good condition. If some readings are outside the ideal range, explain what this might mean for their crop’s health and suggest how they can fix it.
+            1. Identify the crop mentioned.
+            2. Compare the sensor data provided by the user with the optimal ranges for that crop.
+            3. Keep the response conversational and natural. Avoid using technical formatting like bullet points or lists. Focus on explaining the data in an easy-to-read, human tone.
 
-            When responding, structure your answer like this:
-            - Start with a summary of the overall condition of the crop.
-            - Follow up with a detailed comparison for each sensor reading. Let the user know if each value is too high, too low, or just right.
-            - Finally, give them advice on what they can do to improve any problematic readings.
+            Give an overall summary first, then briefly explain any key points that need attention. Keep it friendly and concise. Use natural language, just like you’re having a conversation.
 
             For example:
-            - "Your wheat crop is currently in good condition."
-            - "The soil moisture is optimal compared to the ideal range for wheat (20-30%). This is great for growth."
-            - "However, the temperature is a little low at 12°C, which is below the ideal range for wheat (15-25°C). This could slow down development."
-            - "The pH is within range, nitrogen levels are low, and potassium is slightly higher than recommended."
+            - "Your blackberry crop is showing some minor issues. The temperature is slightly higher than ideal, which may stress the plants. Try using shade nets. The soil moisture is also on the higher side, so you might want to cut back on irrigation. Nutrient levels are all fine though, so great job there!"
+            - "The temperature and moisture levels are a bit too high for your wheat crop. This might cause some stress, so consider adjusting watering and providing more shade. On the bright side, the nitrogen and pH levels look good, so keep up the good work there."
 
-            If the values are off, provide practical advice, like adjusting irrigation, adding fertilizers, or balancing soil nutrients.
+            Make sure to focus on key points without over-explaining. Keep the response to around 4-5 sentences.
+            ` 
 
-            Your goal is to give clear, helpful, and actionable advice so that users can make informed decisions about their crops.
-            `
 
 
         // Send request to OpenAI to get the status
         const messageResponse = await OPENAI_CLIENT.post('/chat/completions', {
-            model: 'gpt-4',
+            model: 'gpt-4o',
             messages: [
                 { role: "system", content: system_prompt + `\nThe date today is ${currentDate}.\nUser profile: ${profile}.\nThe user's farmland has the following record: ${formattedRecords}`},
                 { role: "user", content: "What is the status of my plant?" }

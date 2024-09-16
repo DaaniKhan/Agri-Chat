@@ -1,10 +1,8 @@
 // Import express and node-cron using ES module syntax
 import express from 'express';
 import cron from 'node-cron';
-import axios from "axios";
-import dotenv from 'dotenv';
-import { addReadingRecord, addUser, get10ReadingRecords, getLanguage, addConversation, getThreadID, get10ReadingRecordsByUserID } from './db_controller.js'; 
-import { format } from 'date-fns';
+import { sendDailyUpdate } from './helpers.js';
+
 
 // Initialize Express
 const app = express();
@@ -13,33 +11,11 @@ const app = express();
 app.use(express.json());
 
 let daily_update_time = "00"
+let dailyJob = null;
 
 // Home Route
 app.get('/', (req, res) => {
   res.send('Welcome to Railway Cron Job Server with Multiple Jobs');
-});
-
-let dailyJob;
-
-// Cron job to update daily_update_time and reschedule the job
-cron.schedule("* * * * *", () => {
-    // Update the daily_update_time dynamically
-    update_time = "12"; // New time value
-
-    
-    // Reschedule the daily update job with the new time
-    if (daily_update_time != update_time){
-        daily_update_time = update_time
-        console.log("Updated Time to: " + daily_update_time);
-        scheduleDailyJob();
-    }
-    else{
-        console.log("No new time")
-    }
-}, 
-{
-    scheduled: true,
-    timezone: "Asia/Karachi"
 });
 
 // Function to create and schedule the daily update cron job
@@ -54,9 +30,6 @@ function scheduleDailyJob() {
         // Example function call
         // sendDailyUpdate("923224661550");
         // sendDailyUpdate("923200006080");
-
-        console.log("PLEASE WORK");
-        console.log("Scheduled job with time: " + daily_update_time + " 15 * * *");
     }, 
     {
         scheduled: true,
@@ -66,6 +39,28 @@ function scheduleDailyJob() {
 
 // Initial scheduling of the daily update job
 scheduleDailyJob();
+
+// Cron job to update daily_update_time and reschedule the job
+cron.schedule("00 15 * * *", () => {
+    // Update the daily_update_time dynamically
+
+    // Read Time from database for that user and check with their current daily update time
+    // If a change needs to be done
+
+    // Reschedule the daily update job with the new time
+    if (daily_update_time != update_time){
+        daily_update_time = update_time
+        console.log("Updated Time to: " + daily_update_time);
+        scheduleDailyJob();
+    }
+    else{
+        console.log("No new time to schedule")
+    }
+}, 
+{
+    scheduled: true,
+    timezone: "Asia/Karachi"
+});
 
 // Port for Express server
 const PORT = process.env.PORT || 3000;

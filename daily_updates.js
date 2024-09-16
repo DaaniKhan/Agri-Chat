@@ -118,7 +118,7 @@ cron.schedule("0 9 * * *", () => {
 
             // Send request to OpenAI to get the status
             const messageResponse = await OPENAI_CLIENT.post('/chat/completions', {
-                model: 'gpt-4',
+                model: 'gpt-4o',
                 messages: [
                     { role: "system", content: system_prompt + `\nThe date today is ${currentDate}.\nUser profile: ${profile}.\nThe user's farmland has the following record: ${formattedRecords}`},
                     { role: "user", content: "What is the status of my plant?" }
