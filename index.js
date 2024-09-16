@@ -56,8 +56,17 @@ async function sendWhatsappMessage(phone_number, message) {
     }
 }
 
+let daily_update_time = ""
 
-cron.schedule("15 09 * * *", () => {
+cron.schedule(`* * * * *`, () => {
+    daily_update_time = "40"
+}, 
+{
+    scheduled: true,
+    timezone: "Asia/Karachi"
+})
+
+cron.schedule(`${daily_update_time} 11 * * *`, () => {
     dotenv.config();
 
     const API_KEY = process.env.OPENAI_API_KEY;
