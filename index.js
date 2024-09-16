@@ -1,6 +1,10 @@
 // Import express and node-cron using ES module syntax
 import express from 'express';
 import cron from 'node-cron';
+import axios from "axios";
+import dotenv from 'dotenv';
+import { addReadingRecord, addUser, get10ReadingRecords, getLanguage, addConversation, getThreadID, get10ReadingRecordsByUserID } from './db_controller.js';  // Your database operations
+import { format } from 'date-fns';
 
 // Initialize Express
 const app = express();
@@ -53,7 +57,7 @@ async function sendWhatsappMessage(phone_number, message) {
 }
 
 
-cron.schedule("0 9 * * *", () => {
+cron.schedule("15 09 * * *", () => {
     dotenv.config();
 
     const API_KEY = process.env.OPENAI_API_KEY;
@@ -133,6 +137,7 @@ cron.schedule("0 9 * * *", () => {
                     { role: "user", content: "What is the status of my plant?" }
                 ]
             });
+            console.log("here")
 
             const response = messageResponse.data.choices[0].message.content;
 
@@ -165,7 +170,7 @@ cron.schedule("0 9 * * *", () => {
                 return { user_prompt: 'daily update', original_response: translatedResponse, IOT_Rows: records };
             }
         } catch (error) {
-            console.error('Error sending daily update:', error);
+            console.log('Error sending daily update:', error.message);
             return { message: 'failure getting latest message' };
         }
     }
