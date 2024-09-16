@@ -130,6 +130,23 @@ export async function getThreadID(phone) {
   }
 }
 
-// const {thread, id} = await getThreadID("923224661550")
-// console.log(thread)
-// console.log(id)
+// Function to update the update_time of a user by user_id
+export async function updateUserTime(user_id, new_update_time) {
+  const query = `
+    UPDATE users
+    SET update_time = $1, updated_at = NOW()
+    WHERE id = $2
+  `;
+
+  try {
+    const res = await pool.query(query, [new_update_time, user_id]);
+
+    if (res.rowCount > 0) {
+      console.log(`User ${user_id} update_time updated to ${new_update_time}`);
+    } else {
+      console.log(`User with id ${user_id} not found.`);
+    }
+  } catch (error) {
+    console.error('Error: Could Not Update User update_time.', error);
+  }
+}
