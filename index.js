@@ -12,6 +12,8 @@ const app = express();
 // Middleware to parse JSON
 app.use(express.json());
 
+let daily_update_time = "00"
+
 // Home Route
 app.get('/', (req, res) => {
   res.send('Welcome to Railway Cron Job Server with Multiple Jobs');
@@ -55,8 +57,6 @@ async function sendWhatsappMessage(phone_number, message) {
         console.error(`Error occurred: ${error.message}`);
     }
 }
-
-let daily_update_time = ""
 
 cron.schedule("* * * * *", () => {
     daily_update_time = "45"
