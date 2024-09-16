@@ -19,24 +19,25 @@ app.get('/', (req, res) => {
   res.send('Welcome to Railway Cron Job Server with Multiple Jobs');
 });
 
-// Cron Job
-cron.schedule("* * * * *", () => {
-    console.log(daily_update_time + " 11 * * *")
-    daily_update_time = "52"
-    console.log("Updated Time")
-    console.log(daily_update_time + " 11 * * *")
+
+
+cron.schedule(daily_update_time + " 14 * * *", () => {
+    // Example function call
+    // sendDailyUpdate("923224661550");
+    // sendDailyUpdate("923200006080");
+
+    console.log("PLEASE WORK")
 }, 
 {
     scheduled: true,
     timezone: "Asia/Karachi"
 })
 
-cron.schedule(daily_update_time + " 11 * * *", () => {
-    // Example function call
-    // sendDailyUpdate("923224661550");
-    // sendDailyUpdate("923200006080");
-
-    console.log("PLEASE WORK")
+// Cron Job
+cron.schedule("* * * * *", () => {
+    daily_update_time = "40"
+    console.log("Updated Time")
+    console.log(daily_update_time + " 14 * * *")
 }, 
 {
     scheduled: true,
