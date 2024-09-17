@@ -10,6 +10,7 @@ export async function sendDailyUpdate(phone) {
     try {
         dotenv.config();
 
+        console.log(process.env.OPENAI_API_KEY)
         const client = new OpenAI();
         
         const { thread_id, id } = await getThreadID(phone);
