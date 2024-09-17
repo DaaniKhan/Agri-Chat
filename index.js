@@ -40,7 +40,7 @@ function scheduleDailyJob() {
             // Schedule a job for each user using their specific update time
             const userJob = cron.schedule(`${min} ${hr} * * *`, () => {
                 
-                if (userId == 4){
+                if (userId == 1 || userId == 4){
                     console.log(`Sending daily update for user ${userId} at ${hr}:${min}`);
                     sendDailyUpdate(phone_numbers[userId - 1]);
                 }
