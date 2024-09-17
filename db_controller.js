@@ -150,3 +150,50 @@ export async function updateUserTime(user_id, new_update_time) {
     console.error('Error: Could Not Update User update_time.', error);
   }
 }
+
+// Function to get the update_time of a user by user_id
+export async function getUserUpdateTime(user_id) {
+  const query = `
+    SELECT update_time
+    FROM users
+    WHERE id = $1
+  `;
+
+  try {
+    const res = await pool.query(query, [user_id]);
+
+    if (res.rows.length > 0) {
+      return res.rows[0].update_time;
+    } else {
+      console.log(`User with id ${user_id} not found.`);
+      return null;
+    }
+  } catch (error) {
+    console.error('Error: Could not fetch update_time.', error);
+    return null;
+  }
+}
+
+// Function to get the update_time for all users ordered by user_id
+export async function getAllUserUpdateTimes() {
+  const query = `
+    SELECT update_time
+    FROM users
+    ORDER BY id ASC
+  `;
+
+  try {
+    const res = await pool.query(query);
+
+    if (res.rows.length > 0) {
+      // Map the rows to extract the update_time values into an array
+      return res.rows.map(row => row.update_time);
+    } else {
+      console.log('No users found.');
+      return [];
+    }
+  } catch (error) {
+    console.error('Error: Could not fetch update times.', error);
+    return [];
+  }
+}

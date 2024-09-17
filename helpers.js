@@ -43,7 +43,7 @@ export async function sendDailyUpdate(phone) {
         // Define profiles based on user_id
         let profile = '';
         if (user_id === 1 || user_id === 3 || user_id === 4) {
-            profile = "A meticulous and detail-oriented individual, she holds a PhD in Computer Science with a specialization in Human-Computer Interaction. She is an instructor at a prestigious university and applies her rigorous academic mindset to her home farming activities. Growing mint in DHA, Lahore, Punjab, Pakistan, she dedicates daily attention to her crop, striving for the highest quality. Her interest in innovative techniques aligns with her commitment to successful and sustainable farming practices. Given her preference for efficiency, she values concise, 2-3 line responses from a chatbot to quickly address her queries and needs. She specifically seeks brief but actionable advice that she can put into practice, ensuring her time is used effectively";
+            profile = "A meticulous and detail-oriented individual, she holds a PhD in Computer Science with a specialization in Human-Computer Interaction. She is an instructor at a prestigious university and applies her rigorous academic mindset to her home farming activities. Growing blackberries in DHA, Lahore, Punjab, Pakistan, she dedicates daily attention to her crop, striving for the highest quality. Her interest in innovative techniques aligns with her commitment to successful and sustainable farming practices. Given her preference for efficiency, she values concise, 2-3 line responses from a chatbot to quickly address her queries and needs. She specifically seeks brief but actionable advice that she can put into practice, ensuring her time is used effectively";
         } else if (user_id === 2) {
             profile = "Prepare a message for a 45-year-old female from a low socio-economic background...";
         }
@@ -86,7 +86,7 @@ export async function sendDailyUpdate(phone) {
             console.log(`\nResponse:\n${response}`);
 
             // Log the conversation in the database
-            await addConversation(user_id, "daily update", response);
+            await addConversation(user_id, "daily update", response, "False");
 
             await sendWhatsappMessage(phone, response);
             return { user_prompt: 'daily update', original_response: response, IOT_Rows: records };
