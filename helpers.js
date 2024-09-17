@@ -3,14 +3,12 @@ import OpenAI from 'openai';
 import { addReadingRecord, addUser, get10ReadingRecords, getLanguage, addConversation, getThreadID, get10ReadingRecordsByUserID } from './db_controller.js';
 import { format } from 'date-fns';
 import dotenv from 'dotenv';
-import { writeFileSync } from 'fs';
 
 // Main function to send daily update
 export async function sendDailyUpdate(phone) {
     try {
         dotenv.config();
 
-        console.log(process.env.OPENAI_API_KEY)
         const client = new OpenAI();
         
         const { thread_id, id } = await getThreadID(phone);
@@ -126,6 +124,7 @@ export async function sendDailyUpdate(phone) {
         }
     } catch (error) {
         console.log('Error sending daily update:', error.message);
+        console.log(error)
         return { message: 'failure getting latest message' };
     }
 }
