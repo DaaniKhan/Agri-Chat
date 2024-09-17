@@ -9,7 +9,9 @@ export async function sendDailyUpdate(phone) {
     try {
         dotenv.config();
 
-        const client = new OpenAI();
+        const client = new OpenAI({
+            apiKey: process.env.OPENAI_API_KEY,
+        });
         
         const { thread_id, id } = await getThreadID(phone);
         const user_id = id
@@ -124,7 +126,6 @@ export async function sendDailyUpdate(phone) {
         }
     } catch (error) {
         console.log('Error sending daily update:', error.message);
-        console.log(error)
         return { message: 'failure getting latest message' };
     }
 }
