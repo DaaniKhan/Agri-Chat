@@ -20,7 +20,7 @@ const pool = new Pool({
 export async function addUser(name, address, phone, city, country, language, thread_id, update_time) {
   const query = `
     INSERT INTO users (name, address, phone, city, country, language, thread_id, update_time, created_at, updated_at)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), NOW())
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), NOW())
   `;
 
   try {
@@ -80,7 +80,7 @@ export async function get10ReadingRecordsByUserID(user_id) {
 export async function addConversation(user_id, message, response, actionable) {
   const query = `
     INSERT INTO messages (user_id, message, response, actionable, created_at, updated_at)
-    VALUES ($1, $2, $3, NOW(), NOW())
+    VALUES ($1, $2, $3, $4, NOW(), NOW())
   `;
 
   try {
