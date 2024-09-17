@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Configuration, OpenAIApi } from 'openai';
+import OpenAI from 'openai';
 import { addReadingRecord, addUser, get10ReadingRecords, getLanguage, addConversation, getThreadID, get10ReadingRecordsByUserID } from './db_controller.js';
 import { format } from 'date-fns';
 import dotenv from 'dotenv';
@@ -9,12 +9,9 @@ export async function sendDailyUpdate(phone) {
     try {
         dotenv.config();
 
-        const configuration = new Configuration({
-            apiKey: process.env.OPENAI_API_KEY, 
+        const client = new OpenAI({
+            apiKey: process.env['OPENAI_API_KEY'], 
         });
-        
-        const openai = new OpenAIApi(configuration);
-        
         
         const { thread_id, id } = await getThreadID(phone);
         const user_id = id
@@ -66,7 +63,8 @@ export async function sendDailyUpdate(phone) {
 
 
         // Send request to OpenAI to get the status
-        const messageResponse = await openai.createChatCompletion({
+        
+        const messageResponse = await client.chat.completions.create({
             model: 'gpt-4o', 
             messages: [
                 {
