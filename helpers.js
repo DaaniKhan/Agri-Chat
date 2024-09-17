@@ -3,15 +3,14 @@ import OpenAI from 'openai';
 import { addReadingRecord, addUser, get10ReadingRecords, getLanguage, addConversation, getThreadID, get10ReadingRecordsByUserID } from './db_controller.js';
 import { format } from 'date-fns';
 import dotenv from 'dotenv';
+import { writeFileSync } from 'fs';
 
 // Main function to send daily update
 export async function sendDailyUpdate(phone) {
     try {
         dotenv.config();
 
-        const client = new OpenAI({
-            apiKey: process.env.OPENAI_API_KEY, 
-        });
+        const client = new OpenAI();
         
         const { thread_id, id } = await getThreadID(phone);
         const user_id = id
@@ -79,7 +78,7 @@ export async function sendDailyUpdate(phone) {
         });
 
         // Access the completion response
-        const response = messageResponse.data.choices[0].message.content;
+        const response = messageResponse.choices[0].message.content
 
         console.log(`Users Language: ${language}`);
         if (language === "English") {
@@ -92,18 +91,34 @@ export async function sendDailyUpdate(phone) {
             return { user_prompt: 'daily update', original_response: response, IOT_Rows: records };
         } else {
             // Translate response to the user's preferred language
-            const translationResponse = await OPENAI_CLIENT.post('/chat/completions', {
-                model: 'gpt-4o',
+            // const translationResponse = await OPENAI_CLIENT.post('/chat/completions', {
+            //     model: 'gpt-4o',
+            //     messages: [
+            //         { role: "system", content: `Please translate the following message to ${language}.` },
+            //         { role: "user", content: response }
+            //     ]
+            // });
+
+            const translationResponse = await client.chat.completions.create({
+                model: 'gpt-4o', 
                 messages: [
-                    { role: "system", content: `Please translate the following message to ${language}.` },
-                    { role: "user", content: response }
+                    {
+                        role: "system",
+                        content: `Please translate the following message to ${language}.`
+                    },
+                    {
+                        role: "user",
+                        content: `${response}`
+                    }
                 ]
             });
+    
+            // Access the completion response
+            const translatedResponse = translationResponse.choices[0].message.content;
 
-            const translatedResponse = translationResponse.data.choices[0].message.content;
             console.log(`\nTranslated Response:\n${translatedResponse}`);
             // Log the conversation in the database
-            await addConversation(user_id, "daily update", translatedResponse);
+            await addConversation(user_id, "daily update", translatedResponse, "False");
             await sendWhatsappMessage(phone, translatedResponse);
 
             return { user_prompt: 'daily update', original_response: translatedResponse, IOT_Rows: records };
