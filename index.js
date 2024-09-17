@@ -38,7 +38,7 @@ function scheduleDailyJob() {
             const { hr, min } = daily_update_times[userId];
             
             // Schedule a job for each user using their specific update time
-            const userJob = cron.schedule(`* * * * *`, () => {
+            const userJob = cron.schedule(`${min} ${hr} * * *`, () => {
                 
                 if (userId == 4){
                     console.log(`Sending daily update for user ${userId} at ${hr}:${min}`);
