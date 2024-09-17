@@ -128,6 +128,7 @@ export async function sendDailyUpdate(phone) {
         }
     } catch (error) {
         console.log('Error sending daily update:', error.message);
+        console.log(error)
         return { message: 'failure getting latest message' };
     }
 }
