@@ -9,7 +9,6 @@ export async function sendDailyUpdate(phone) {
     try {
         dotenv.config();
 
-        console.log(process.env.OPENAI_API_KEY)
         const client = new OpenAI({
             apiKey: process.env.OPENAI_API_KEY,
         });
@@ -65,7 +64,6 @@ export async function sendDailyUpdate(phone) {
 
         // Send request to OpenAI to get the status
         
-        console.log("HELLO COMPLETIONS")
         const messageResponse = await client.chat.completions.create({
             model: 'gpt-4o', 
             messages: [
@@ -79,7 +77,7 @@ export async function sendDailyUpdate(phone) {
                 }
             ]
         });
-        console.log("HELLO COMPLETIONS part 2")
+
         // Access the completion response
         const response = messageResponse.choices[0].message.content
 
