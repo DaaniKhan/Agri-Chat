@@ -1,4 +1,5 @@
 import axios from "axios";
+import { Configuration, OpenAIApi } from 'openai';
 import { addReadingRecord, addUser, get10ReadingRecords, getLanguage, addConversation, getThreadID, get10ReadingRecordsByUserID } from './db_controller.js';
 import { format } from 'date-fns';
 import dotenv from 'dotenv';
@@ -8,15 +9,11 @@ export async function sendDailyUpdate(phone) {
     try {
         dotenv.config();
 
-        const API_KEY = process.env.OPENAI_API_KEY;
-
-        // OpenAI Client setup (using axios for API requests)
-        const OPENAI_CLIENT = axios.create({
-            baseURL: 'https://api.openai.com/v1/',
-            headers: {
-                'Authorization': `Bearer ${API_KEY}`
-            }
+        const configuration = new Configuration({
+            apiKey: process.env.OPENAI_API_KEY, 
         });
+        
+        const openai = new OpenAIApi(configuration);
         
         
         const { thread_id, id } = await getThreadID(phone);
@@ -69,17 +66,22 @@ export async function sendDailyUpdate(phone) {
 
 
         // Send request to OpenAI to get the status
-        const messageResponse = await OPENAI_CLIENT.post('/chat/completions', {
-            model: 'gpt-4o',
+        const messageResponse = await openai.createChatCompletion({
+            model: 'gpt-4o', 
             messages: [
-                { role: "system", content: system_prompt + `\nThe date today is ${currentDate}.\nUser profile: ${profile}.\nThe user's farmland has the following record: ${formattedRecords}`},
-                { role: "user", content: "What is the status of my plant?" }
+                {
+                    role: "system",
+                    content: `${system_prompt}\nThe date today is ${currentDate}.\nUser profile: ${profile}.\nThe user's farmland has the following record: ${formattedRecords}`
+                },
+                {
+                    role: "user",
+                    content: "What is the status of my plant?"
+                }
             ]
         });
-        console.log("here")
 
+        // Access the completion response
         const response = messageResponse.data.choices[0].message.content;
-
 
         console.log(`Users Language: ${language}`);
         if (language === "English") {
