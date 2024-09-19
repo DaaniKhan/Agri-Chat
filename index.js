@@ -104,67 +104,67 @@ cron.schedule("* * * * *", async () => {
     timezone: "Asia/Karachi"
 });
 
-cron.schedule("00 * * * *", async () => {
-    // Define the optimal ranges for blackberries
-    const optimalRanges = {
-        pH: { min: 5.5, max: 7.0 },
-        nitrogen: { min: 20, max: 100 },  // mg/kg
-        phosphorus: { min: 20, max: 60 }, // mg/kg
-        potassium: { min: 100, max: 300 }, // mg/kg
-        temperature: { min: 18, max: 29 }, // °C
-        moisture: { min: 50, max: 80 },   // % (field capacity)
-        conductivity: { min: 200, max: 1000 } // µS/cm
-    };
+// cron.schedule("00 * * * *", async () => {
+//     // Define the optimal ranges for blackberries
+//     const optimalRanges = {
+//         pH: { min: 5.5, max: 7.0 },
+//         nitrogen: { min: 20, max: 100 },  // mg/kg
+//         phosphorus: { min: 20, max: 60 }, // mg/kg
+//         potassium: { min: 100, max: 300 }, // mg/kg
+//         temperature: { min: 18, max: 29 }, // °C
+//         moisture: { min: 50, max: 80 },   // % (field capacity)
+//         conductivity: { min: 200, max: 1000 } // µS/cm
+//     };
     
-    // Function to check if the measurement is within range
-    const isInRange = (value, min, max) => {
-        return value >= min && value <= max;
-    };
+//     // Function to check if the measurement is within range
+//     const isInRange = (value, min, max) => {
+//         return value >= min && value <= max;
+//     };
     
-    // Function to compare actual values against the optimal ranges
-    function checkBlackberryConditions(values) {
-        let alerts = [];
+//     // Function to compare actual values against the optimal ranges
+//     function checkBlackberryConditions(values) {
+//         let alerts = [];
     
-        if (!isInRange(values.pH, optimalRanges.pH.min, optimalRanges.pH.max)) {
-        alerts.push(`pH is out of range: ${values.pH} (Optimal: ${optimalRanges.pH.min}-${optimalRanges.pH.max})`);
-        }
+//         if (!isInRange(values.pH, optimalRanges.pH.min, optimalRanges.pH.max)) {
+//         alerts.push(`pH is out of range: ${values.pH} (Optimal: ${optimalRanges.pH.min}-${optimalRanges.pH.max})`);
+//         }
     
-        if (!isInRange(values.nitrogen, optimalRanges.nitrogen.min, optimalRanges.nitrogen.max)) {
-        alerts.push(`Nitrogen is out of range: ${values.nitrogen} mg/kg (Optimal: ${optimalRanges.nitrogen.min}-${optimalRanges.nitrogen.max} mg/kg)`);
-        }
+//         if (!isInRange(values.nitrogen, optimalRanges.nitrogen.min, optimalRanges.nitrogen.max)) {
+//         alerts.push(`Nitrogen is out of range: ${values.nitrogen} mg/kg (Optimal: ${optimalRanges.nitrogen.min}-${optimalRanges.nitrogen.max} mg/kg)`);
+//         }
     
-        if (!isInRange(values.phosphorus, optimalRanges.phosphorus.min, optimalRanges.phosphorus.max)) {
-        alerts.push(`Phosphorus is out of range: ${values.phosphorus} mg/kg (Optimal: ${optimalRanges.phosphorus.min}-${optimalRanges.phosphorus.max} mg/kg)`);
-        }
+//         if (!isInRange(values.phosphorus, optimalRanges.phosphorus.min, optimalRanges.phosphorus.max)) {
+//         alerts.push(`Phosphorus is out of range: ${values.phosphorus} mg/kg (Optimal: ${optimalRanges.phosphorus.min}-${optimalRanges.phosphorus.max} mg/kg)`);
+//         }
     
-        if (!isInRange(values.potassium, optimalRanges.potassium.min, optimalRanges.potassium.max)) {
-        alerts.push(`Potassium is out of range: ${values.potassium} mg/kg (Optimal: ${optimalRanges.potassium.min}-${optimalRanges.potassium.max} mg/kg)`);
-        }
+//         if (!isInRange(values.potassium, optimalRanges.potassium.min, optimalRanges.potassium.max)) {
+//         alerts.push(`Potassium is out of range: ${values.potassium} mg/kg (Optimal: ${optimalRanges.potassium.min}-${optimalRanges.potassium.max} mg/kg)`);
+//         }
     
-        if (!isInRange(values.temperature, optimalRanges.temperature.min, optimalRanges.temperature.max)) {
-        alerts.push(`Temperature is out of range: ${values.temperature} °C (Optimal: ${optimalRanges.temperature.min}-${optimalRanges.temperature.max} °C)`);
-        }
+//         if (!isInRange(values.temperature, optimalRanges.temperature.min, optimalRanges.temperature.max)) {
+//         alerts.push(`Temperature is out of range: ${values.temperature} °C (Optimal: ${optimalRanges.temperature.min}-${optimalRanges.temperature.max} °C)`);
+//         }
     
-        if (!isInRange(values.moisture, optimalRanges.moisture.min, optimalRanges.moisture.max)) {
-        alerts.push(`Moisture is out of range: ${values.moisture}% (Optimal: ${optimalRanges.moisture.min}-${optimalRanges.moisture.max}%)`);
-        }
+//         if (!isInRange(values.moisture, optimalRanges.moisture.min, optimalRanges.moisture.max)) {
+//         alerts.push(`Moisture is out of range: ${values.moisture}% (Optimal: ${optimalRanges.moisture.min}-${optimalRanges.moisture.max}%)`);
+//         }
     
-        if (!isInRange(values.conductivity, optimalRanges.conductivity.min, optimalRanges.conductivity.max)) {
-        alerts.push(`Conductivity is out of range: ${values.conductivity} µS/cm (Optimal: ${optimalRanges.conductivity.min}-${optimalRanges.conductivity.max} µS/cm)`);
-        }
+//         if (!isInRange(values.conductivity, optimalRanges.conductivity.min, optimalRanges.conductivity.max)) {
+//         alerts.push(`Conductivity is out of range: ${values.conductivity} µS/cm (Optimal: ${optimalRanges.conductivity.min}-${optimalRanges.conductivity.max} µS/cm)`);
+//         }
     
-        // If any alerts were generated, send a WhatsApp message
-        if (alerts.length > 0) {
-        sendWhatsappMessage(alerts.join('\n'));
-        }
-    }
+//         // If any alerts were generated, send a WhatsApp message
+//         if (alerts.length > 0) {
+//         sendWhatsappMessage(alerts.join('\n'));
+//         }
+//     }
     
     
-}, 
-{
-    scheduled: true,
-    timezone: "Asia/Karachi"
-})
+// }, 
+// {
+//     scheduled: true,
+//     timezone: "Asia/Karachi"
+// })
 
 // Port for Express server
 const PORT = process.env.PORT || 3000;
