@@ -113,20 +113,20 @@ export async function getLanguage(user_id) {
 // Get the thread ID and user ID by phone number
 export async function getThreadID(phone) {
   const query = `
-    SELECT thread_id, id FROM users WHERE phone = $1
+    SELECT thread_id, assistant_id, id FROM users WHERE phone = $1
   `;
 
   try {
     const result = await pool.query(query, [phone]);
     if (result.rows.length > 0) {
-      const { thread_id, id } = result.rows[0];
-      return { thread_id, id };
+      const { thread_id, assistant_id, id } = result.rows[0];
+      return { thread_id, assistant_id, id };
     } else {
-      return { thread_id: '', id: '' };
+      return { thread_id: '', assistant_id: '', id: '' };
     }
   } catch (error) {
     console.error('Error: Could Not Get User Thread.', error);
-    return { thread_id: '', id: '' };
+    return { thread_id: '', assistant_id: '', id: '' };
   }
 }
 
@@ -195,5 +195,46 @@ export async function getAllUserUpdateTimes() {
   } catch (error) {
     console.error('Error: Could not fetch update times.', error);
     return [];
+  }
+}
+
+// Function to get user details by user_id
+export async function getUserDetails(user_id) {
+  const query = `
+    SELECT id, name, address, phone, city, country, language, thread_id, assistant_id, update_time, gender, age, socioeconomic, TypeOfFarm, crop
+    FROM users
+    WHERE id = $1
+  `;
+
+  try {
+    // Query the database to get user details
+    const result = await pool.query(query, [user_id]);
+
+    // Check if user exists and return details
+    if (result.rows.length > 0) {
+      const user = result.rows[0];
+      return {
+        user_id: user.id,
+        name: user.name,
+        address: user.address,
+        phone: user.phone,
+        city: user.city,
+        country: user.country,
+        language: user.language,
+        thread_id: user.thread_id,
+        assistant_id: user.assistant_id,
+        update_time: user.update_time,
+        gender: user.gender,
+        age: user.age,
+        socioeconomic: user.socioeconomic,
+        TypeOfFarm: user.TypeOfFarm,
+        crop: user.crop
+      };
+    } else {
+      return `No user found with ID ${user_id}`;
+    }
+  } catch (error) {
+    console.error('Error: Could not retrieve user details.', error);
+    return `Error: Could not retrieve user details. Exception: ${error.message}`;
   }
 }

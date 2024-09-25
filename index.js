@@ -16,7 +16,7 @@ let daily_update_times = {}
 
 let dailyJobs = [];
 
-let phone_numbers = ["923200006080", "923004329358", "923344926470", "923224661550"]
+let phone_numbers = ["923084341993", "923200006080", "923224661550"]
 
 // Home Route
 app.get('/', (req, res) => {
@@ -62,7 +62,7 @@ console.log("First Schedule Call")
 scheduleDailyJob();
 
 // Cron job to update daily_update_time and reschedule the job
-cron.schedule("00 16 * * *", async () => {
+cron.schedule("00 10 * * *", async () => {
     // Update the daily_update_time dynamically
     async function getUpdateTimes(){
         

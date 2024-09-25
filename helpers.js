@@ -1,6 +1,6 @@
 import axios from "axios";
 import OpenAI from 'openai';
-import { addReadingRecord, addUser, get10ReadingRecords, getLanguage, addConversation, getThreadID, get10ReadingRecordsByUserID } from './db_controller.js';
+import { addReadingRecord, addUser, get10ReadingRecords, getLanguage, addConversation, getThreadID, get10ReadingRecordsByUserID, getUserDetails } from './db_controller.js';
 import { format } from 'date-fns';
 import dotenv from 'dotenv';
 
@@ -13,7 +13,7 @@ export async function sendDailyUpdate(phone) {
             apiKey: process.env.OPENAI_API_KEY,
         });
         
-        const { thread_id, id } = await getThreadID(phone);
+        const { thread_id, assistant_id, id } = await getThreadID(phone);
         const user_id = id
         const language = await getLanguage(user_id);
 
@@ -34,13 +34,7 @@ export async function sendDailyUpdate(phone) {
 
         const currentDate = format(new Date(), 'yyyy-MM-dd');
 
-        // Define profiles based on user_id
-        let profile = '';
-        if (user_id === 1 || user_id === 3 || user_id === 4) {
-            profile = "A meticulous and detail-oriented individual, she holds a PhD in Computer Science with a specialization in Human-Computer Interaction. She is an instructor at a prestigious university and applies her rigorous academic mindset to her home farming activities. Growing blackberries in DHA, Lahore, Punjab, Pakistan, she dedicates daily attention to her crop, striving for the highest quality. Her interest in innovative techniques aligns with her commitment to successful and sustainable farming practices. Given her preference for efficiency, she values concise, 2-3 line responses from a chatbot to quickly address her queries and needs. She specifically seeks brief but actionable advice that she can put into practice, ensuring her time is used effectively";
-        } else if (user_id === 2) {
-            profile = "Prepare a message for a 45-year-old female from a low socio-economic background...";
-        }
+        
 
         const system_prompt = ` 
             You are an agricultural assistant designed to help users monitor and manage their crops effectively. Users will provide sensor data like moisture, temperature, electrical conductivity, pH, nitrogen (N), phosphorus (P), and potassium (K) levels, along with the crop they're growing, such as wheat, corn, or tomatoes.
@@ -54,7 +48,7 @@ export async function sendDailyUpdate(phone) {
             Give an overall summary first, then briefly explain any key points that need attention. Keep it friendly and concise. Use natural language, just like you’re having a conversation.
 
             For example:
-            - "Your blackberry crop is showing some minor issues. The temperature is slightly higher than ideal, which may stress the plants. Try using shade nets. The soil moisture is also on the higher side, so you might want to cut back on irrigation. Nutrient levels are all fine though, so great job there!"
+            - "Your crop is showing some minor issues. The temperature is slightly higher than ideal, which may stress the plants. Try using shade nets. The soil moisture is also on the higher side, so you might want to cut back on irrigation. Nutrient levels are all fine though, so great job there!"
             - "The temperature and moisture levels are a bit too high for your wheat crop. This might cause some stress, so consider adjusting watering and providing more shade. On the bright side, the nitrogen and pH levels look good, so keep up the good work there."
 
             Make sure to focus on key points without over-explaining. Keep the response to around 4-5 sentences.
@@ -64,12 +58,14 @@ export async function sendDailyUpdate(phone) {
 
         // Send request to OpenAI to get the status
         
+        const details = await getUserDetails(user_id)
+
         const messageResponse = await client.chat.completions.create({
             model: 'gpt-4o', 
             messages: [
                 {
                     role: "system",
-                    content: `${system_prompt}\nThe date today is ${currentDate}.\nUser profile: ${profile}.\nThe user's farmland has the following record: ${formattedRecords}`
+                    content: `${system_prompt}\nThe date today is ${currentDate}.\nThe User is growing ${details['crop']}.\nThe user's farmland has the following record: ${formattedRecords}`
                 },
                 {
                     role: "user",
@@ -91,15 +87,7 @@ export async function sendDailyUpdate(phone) {
             await sendWhatsappMessage(phone, response);
             return { user_prompt: 'daily update', original_response: response, IOT_Rows: records };
         } else {
-            // Translate response to the user's preferred language
-            // const translationResponse = await OPENAI_CLIENT.post('/chat/completions', {
-            //     model: 'gpt-4o',
-            //     messages: [
-            //         { role: "system", content: `Please translate the following message to ${language}.` },
-            //         { role: "user", content: response }
-            //     ]
-            // });
-
+            
             const translationResponse = await client.chat.completions.create({
                 model: 'gpt-4o', 
                 messages: [
@@ -166,5 +154,91 @@ export async function sendWhatsappMessage(phone_number, message) {
         }
     } catch (error) {
         console.error(`Error occurred: ${error.message}`);
+    }
+}
+
+
+export async function sendSensorReadings(phone) {
+    try {
+        dotenv.config();
+
+        const OPENAI_CLIENT = new OpenAI({
+            apiKey: process.env.OPENAI_API_KEY,
+        });
+
+        // Fetch thread and user details
+        const { thread_id, assistant_id, user_id } = getThreadID(phone);
+        console.log(`Thread: ${thread_id} Assistant: ${assistant_id} User: ${user_id}`);
+
+        // Fetch user language (if needed)
+        const language = getLanguage(user_id);
+
+        let records = "";
+
+        // Temporary condition for specific users
+        if (user_id === 2 || user_id === 3) {
+            records = get10ReadingRecords(); // Fetch all sensor data for users 2 or 3
+        } else {
+            records = get10ReadingRecordsByUserID(user_id); // Fetch user-specific sensor data
+        }
+
+        // Format records
+        const formatted_records = records.map(record => 
+            `ID: ${record.id}, User ID: ${record.user_id}, pH: ${record.pH} pH, Nitrogen: ${record.nitrogen} mg/kg, ` +
+            `Phosphorus: ${record.phosphorus} mg/kg, Potassium: ${record.potassium} mg/kg, Temperature: ${record.temperature} ℃, ` +
+            `Moisture: ${record.moisture}%, Conductivity: ${record.conductivity} us/cm, Battery: ${record.battery}%, ` +
+            `Created At: ${record.created_at}, Updated At: ${record.updated_at}`
+        );
+
+
+        const final_records = formatted_records.join("\n");
+
+        const details = await getUserDetails(user_id)
+
+        const message = await OPENAI_CLIENT.beta.threads.messages.create({
+            thread_id: thread_id,
+            role: "user",
+            content: "Here are my latest Field Sensor Readings" +
+            `\n The plant being grown is ${details['crop']}.\n` +
+            `Readings:\n${final_records}.`
+        });
+
+        // Use OpenAI client to create and poll a thread run
+        const run = await OPENAI_CLIENT.beta.threads.runs.create_and_poll({
+            thread_id: thread_id,
+            assistant_id: assistant_id,
+            instructions: `You are a helpful assistant with great knowledge of agriculture. Your responses are brief, clear, and to the point (maximum of two to three sentences). Avoid unnecessary technical jargon, but keep advice actionable and relatable.`
+        });
+
+        let response = "";
+
+        if (run.status === 'completed') {
+            // Fetch messages from OpenAI thread
+            const messages = await OPENAI_CLIENT.beta.threads.messages.list({
+                thread_id: thread_id
+            });
+
+            response = messages.data[0].content[0].text.value;
+            console.log(response);
+
+            // Save the conversation in the database
+            addConversation(user_id, user_prompt, response, follow_up);
+        } else {
+            console.log(run.status);
+            return {
+                user_prompt: 'No response from the assistant',
+                original_response: 'No response from the assistant',
+                context: 'No response from the assistant',
+                'IOT Rows': 'No response from the assistant'
+            };
+        }
+    } catch (error) {
+        console.error("Error handling request: ", error);
+        return {
+            user_prompt: 'Error occurred',
+            original_response: 'Error occurred',
+            context: 'Error occurred',
+            'IOT Rows': 'Error occurred'
+        };
     }
 }
