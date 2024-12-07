@@ -35,7 +35,7 @@ export async function addUser(name, address, phone, city, country, language, thr
 // Get user details from the database
 export async function getUserDetails(user_id) {
   const query = `
-    SELECT id as user_id, name, address, phone, city, country, language, thread_id, assistant_id, update_time, gender, age, socioeconomic, TypeOfFarm, crop
+    SELECT id as user_id, name, address, phone, city, country, language, thread_id, assistant_id, update_time, gender, age, socioeconomic, crop
     FROM users
     WHERE id = $1
   `;
