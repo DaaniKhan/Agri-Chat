@@ -17,17 +17,40 @@ const pool = new Pool({
 
 
 // Add a new user to the database
-export async function addUser(name, address, phone, city, country, language, thread_id, update_time) {
+export async function addUser(name, address, phone, city, country, language, thread_id, assistant_id, update_time, gender, age, socioeconomic, TypeOfFarm, crop) {
   const query = `
-    INSERT INTO users (name, address, phone, city, country, language, thread_id, update_time, created_at, updated_at)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), NOW())
+    INSERT INTO users 
+    (name, address, phone, city, country, language, thread_id, assistant_id, update_time, gender, age, socioeconomic, TypeOfFarm, crop, created_at, updated_at)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, NOW(), NOW())
   `;
 
   try {
-    await pool.query(query, [name, address, phone, city, country, language, thread_id, update_time]);
+    await pool.query(query, [name, address, phone, city, country, language, thread_id, assistant_id, update_time, gender, age, socioeconomic, TypeOfFarm, crop]);
     console.log('User added successfully');
   } catch (error) {
     console.error('Error: Could Not Add User.', error);
+  }
+}
+
+// Get user details from the database
+export async function getUserDetails(user_id) {
+  const query = `
+    SELECT id as user_id, name, address, phone, city, country, language, thread_id, assistant_id, update_time, gender, age, socioeconomic, TypeOfFarm, crop
+    FROM users
+    WHERE id = $1
+  `;
+
+  try {
+    const result = await pool.query(query, [user_id]);
+
+    if (result.rows.length > 0) {
+      return result.rows[0]; // Return the user details
+    } else {
+      return `No user found with ID ${user_id}`;
+    }
+  } catch (error) {
+    console.error('Error: Could not retrieve user details.', error);
+    return `Error: Could not retrieve user details. Exception: ${error.message}`;
   }
 }
 
@@ -198,43 +221,29 @@ export async function getAllUserUpdateTimes() {
   }
 }
 
-// Function to get user details by user_id
-export async function getUserDetails(user_id) {
+// Get 10 equally spaced readings in the last 24 hours
+export async function get10EquallySpacedReadings() {
   const query = `
-    SELECT id, name, address, phone, city, country, language, thread_id, assistant_id, update_time, gender, age, socioeconomic, TypeOfFarm, crop
-    FROM users
-    WHERE id = $1
+    WITH filtered_readings AS (
+      SELECT *, 
+             ROW_NUMBER() OVER (ORDER BY created_at DESC) AS row_num
+      FROM readings
+      WHERE created_at >= NOW() - INTERVAL '24 HOURS'
+    ),
+    spaced_readings AS (
+      SELECT * 
+      FROM filtered_readings
+      WHERE MOD(row_num, GREATEST(FLOOR((SELECT COUNT(*) FROM filtered_readings)::NUMERIC / 10)::INTEGER, 1)) = 0
+      LIMIT 10
+    )
+    SELECT * FROM spaced_readings ORDER BY created_at;
   `;
 
   try {
-    // Query the database to get user details
-    const result = await pool.query(query, [user_id]);
-
-    // Check if user exists and return details
-    if (result.rows.length > 0) {
-      const user = result.rows[0];
-      return {
-        user_id: user.id,
-        name: user.name,
-        address: user.address,
-        phone: user.phone,
-        city: user.city,
-        country: user.country,
-        language: user.language,
-        thread_id: user.thread_id,
-        assistant_id: user.assistant_id,
-        update_time: user.update_time,
-        gender: user.gender,
-        age: user.age,
-        socioeconomic: user.socioeconomic,
-        TypeOfFarm: user.TypeOfFarm,
-        crop: user.crop
-      };
-    } else {
-      return `No user found with ID ${user_id}`;
-    }
+    const result = await pool.query(query);
+    return result.rows;
   } catch (error) {
-    console.error('Error: Could not retrieve user details.', error);
-    return `Error: Could not retrieve user details. Exception: ${error.message}`;
+    console.error('Error: Could Not Get 10 Equally Spaced Readings.', error);
+    return [];
   }
 }

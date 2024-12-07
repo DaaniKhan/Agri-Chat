@@ -1,6 +1,6 @@
 import axios from "axios";
 import OpenAI from 'openai';
-import { addReadingRecord, addUser, get10ReadingRecords, getLanguage, addConversation, getThreadID, get10ReadingRecordsByUserID, getUserDetails } from './db_controller.js';
+import { addReadingRecord, addUser, get10ReadingRecords, getLanguage, addConversation, getThreadID, get10ReadingRecordsByUserID, get10EquallySpacedReadings, getUserDetails } from './db_controller.js';
 import { format } from 'date-fns';
 import dotenv from 'dotenv';
 
@@ -19,11 +19,13 @@ export async function sendDailyUpdate(phone) {
 
         // Fetch reading records based on user_id
         let records = [];
-        if (user_id === 1 || user_id === 4) {
-            records = await get10ReadingRecords();
-        } else {
-            records = await get10ReadingRecordsByUserID(user_id);
-        }
+        // if (user_id === 1 || user_id === 4) {
+        //     records = await get10ReadingRecords();
+        // } else {
+        //     records = await get10ReadingRecordsByUserID(user_id);
+        // }
+
+        records = await get10EquallySpacedReadings()
 
         let formattedRecords = [];
         if (records){
@@ -65,11 +67,11 @@ export async function sendDailyUpdate(phone) {
             messages: [
                 {
                     role: "system",
-                    content: `${system_prompt}\nThe date today is ${currentDate}.\nThe User is growing ${details['crop']}.\nThe user's farmland has the following record: ${formattedRecords}`
+                    content: `${system_prompt}\nThe date today is ${currentDate}.\nThe User is growing ${details['crop']}.\nThe user's farmland has the following record: ${formattedRecords}.\nThe user is a ${details['age']} year old ${details['gender']} of ${details['socioeconomic']} status.`
                 },
                 {
                     role: "user",
-                    content: "What is the status of my plant?"
+                    content: "What is the status of my crop?"
                 }
             ]
         });
