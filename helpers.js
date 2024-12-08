@@ -124,7 +124,7 @@ export async function sendDailyUpdate(phone) {
 export async function sendWhatsappMessage(phone_number, message) {
     const url = 'https://graph.facebook.com/v20.0/304854782718986/messages';  // Add the WhatsApp API URL
     const headers = {
-        'Authorization': 'Bearer EAAGI94sqL8oBOZBp1yIJav1h1OCz5ZBXeDuLOyAzREBKq5ZCudKZC7z5BOjKzvLlPK4ALBVbmnoCcZCkan6T6dlLPfOI9wvswWTXCf9jWyais3oWRhLRt4Sa26KavTdYw4nurzcQ8wmxak4MxwtFZAY8fONzP3gehh1NZCsYzCRPcVZC3lZCL5qVSuWEu',  // Add your authorization token here
+        'Authorization': 'Bearer EAAGI94sqL8oBO5F4uonmM0JUEZCQlZBeFtJfEWeEYX1y6UZCqNRsOiTAQye8QQNerhDxfvTA4N5BtCyvVeb6xP0MUVRVpdfR9kIGiBkkmyYSMgvMLQkdMBljyc5YYTZAa5XFAPTuZA5OzL1WBsvZCdtXWSlUGfi9QMB1b2811XJuZAoT0nKf5ZBD6AMf6uvkEUM16wZDZD',  // Add your authorization token here
         'Content-Type': 'application/json'
     };
 

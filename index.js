@@ -18,9 +18,7 @@ let dailyJobs = [];
 
 // let phone_numbers = ["923084341993", "923200006080", "923224661550"]
 
-// let phone_numbers = ["923334341662", "923084219892", "923224661550"]
-
-let phone_numbers = ["923224661550"]
+let phone_numbers = ["923084341993", "923200006080", "923224661550", "923334341662", "923084219892"]
 
 // Home Route
 app.get('/', (req, res) => {
@@ -44,9 +42,9 @@ function scheduleDailyJob() {
             // Schedule a job for each user using their specific update time
             const userJob = cron.schedule(`${min} ${hr} * * *`, () => {
                 
-                if (userId == 3 || userId == 4){
+                if (userId == 3 || userId == 4 || userId == 5){
                     console.log(`Sending daily update for user ${userId} at ${hr}:${min}`);
-                    sendDailyUpdate(phone_numbers[0]);
+                    sendDailyUpdate(phone_numbers[userId - 1]);
                 }
             }, 
             {
@@ -66,7 +64,7 @@ console.log("First Schedule Call")
 scheduleDailyJob();
 
 // Cron job to update daily_update_time and reschedule the job
-cron.schedule("00 00 * * *", async () => {
+cron.schedule("00 * * * *", async () => {
     // Update the daily_update_time dynamically
     async function getUpdateTimes(){
         
