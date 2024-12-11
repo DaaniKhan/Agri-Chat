@@ -42,7 +42,7 @@ function scheduleDailyJob() {
             // Schedule a job for each user using their specific update time
             const userJob = cron.schedule(`${min} ${hr} * * *`, () => {
                 
-                if (userId == 3 || userId == 4 || userId == 5){
+                if (userId == 4 || userId == 5){
                     console.log(`Sending daily update for user ${userId} at ${hr}:${min}`);
                     sendDailyUpdate(phone_numbers[userId - 1]);
                 }
@@ -64,7 +64,7 @@ console.log("First Schedule Call")
 scheduleDailyJob();
 
 // Cron job to update daily_update_time and reschedule the job
-cron.schedule("00 01 * * *", async () => {
+cron.schedule("26 09 * * *", async () => {
     // Update the daily_update_time dynamically
     async function getUpdateTimes(){
         

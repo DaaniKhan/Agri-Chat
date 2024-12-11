@@ -67,7 +67,7 @@ export async function sendDailyUpdate(phone) {
             messages: [
                 {
                     role: "system",
-                    content: `${system_prompt}\nThe date today is ${currentDate}.\nThe User is growing ${details['crop']}.\nThe user's farmland has the following record: ${formattedRecords}.\nThe user is a ${details['age']} year old ${details['gender']} of ${details['socioeconomic']} status.`
+                    content: `${system_prompt}\nThe date today is ${currentDate}.\nThe User is growing ${details['crop']}.\nThe user's farmland has the following record: ${formattedRecords}.`
                 },
                 {
                     role: "user",
