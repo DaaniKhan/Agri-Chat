@@ -25,7 +25,9 @@ export async function sendDailyUpdate(phone) {
         //     records = await get10ReadingRecordsByUserID(user_id);
         // }
 
-        records = await get10EquallySpacedReadings()
+        // records = await get10EquallySpacedReadings()
+
+        records = await get10ReadingRecords()
 
         let formattedRecords = [];
         if (records){
