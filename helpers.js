@@ -25,9 +25,9 @@ export async function sendDailyUpdate(phone) {
         //     records = await get10ReadingRecordsByUserID(user_id);
         // }
 
-        // records = await get10EquallySpacedReadings()
+        records = await get10EquallySpacedReadings()
 
-        records = await get10ReadingRecords()
+        // records = await get10ReadingRecords()
 
         let formattedRecords = [];
         if (records){
@@ -69,7 +69,7 @@ export async function sendDailyUpdate(phone) {
             messages: [
                 {
                     role: "system",
-                    content: `${system_prompt}\nThe date today is ${currentDate}.\nThe User is growing ${details['crop']}.\nThe user's farmland has the following record: ${formattedRecords}.`
+                    content: `${system_prompt}\nThe date today is ${currentDate}.\nThe User is growing ${details['crop']}.\nThe user's farmland has the following record: ${formattedRecords}.\nKeep the response short, around 2-3 sentences maximum.`
                 },
                 {
                     role: "user",
