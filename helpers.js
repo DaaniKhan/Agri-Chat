@@ -53,7 +53,7 @@ export async function sendDailyUpdate(phone) {
             - "Your crop is showing some minor issues. The temperature is slightly higher than ideal, which may stress the plants. Try using shade nets. The soil moisture is also on the higher side, so you might want to cut back on irrigation. Nutrient levels are all fine though, so great job there!"
             - "The temperature and moisture levels are a bit too high for your wheat crop. This might cause some stress, so consider adjusting watering and providing more shade. On the bright side, the nitrogen and pH levels look good, so keep up the good work there."
 
-            Make sure to focus on key points without over-explaining. Keep the response to around 4-5 sentences.
+            Make sure to focus on key points without over-explaining. Keep the response to around 2-3 sentences.
             ` 
 
 
