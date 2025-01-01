@@ -61,50 +61,50 @@ function scheduleDailyJob() {
 
 // Initial scheduling of the daily update job
 console.log("First Schedule Call")
-scheduleDailyJob();
+// scheduleDailyJob();
 
-// Cron job to update daily_update_time and reschedule the job
-cron.schedule("00 01 * * *", async () => {
-    // Update the daily_update_time dynamically
-    async function getUpdateTimes(){
+// // Cron job to update daily_update_time and reschedule the job
+// cron.schedule("00 01 * * *", async () => {
+//     // Update the daily_update_time dynamically
+//     async function getUpdateTimes(){
         
-        const update_times = await getAllUserUpdateTimes()
+//         const update_times = await getAllUserUpdateTimes()
 
-        let daily_update_time = {};
+//         let daily_update_time = {};
 
-        update_times.forEach((time, index) => {
-            // Split the time into hour and minute components
-            const [hr, min] = time.split(':');
+//         update_times.forEach((time, index) => {
+//             // Split the time into hour and minute components
+//             const [hr, min] = time.split(':');
 
-            // Create the entry for each user
-            daily_update_time[index + 1] = {
-                hr: hr,
-                min: min
-            };
-        });
+//             // Create the entry for each user
+//             daily_update_time[index + 1] = {
+//                 hr: hr,
+//                 min: min
+//             };
+//         });
 
-        return daily_update_time
-    }
+//         return daily_update_time
+//     }
     
-    console.log("Getting Times:")
-    const update_times = await getUpdateTimes()
-    console.log(update_times)
+//     console.log("Getting Times:")
+//     const update_times = await getUpdateTimes()
+//     console.log(update_times)
 
-    // Reschedule the daily update job with the new time
-    if (JSON.stringify(daily_update_times) === JSON.stringify(update_times)){
-        console.log("No new times to schedule")
-    }
-    else{
-        daily_update_times = update_times
-        console.log("updated times:")
-        console.log(daily_update_times);
-        scheduleDailyJob();
-    }
-}, 
-{
-    scheduled: true,
-    timezone: "Asia/Karachi"
-});
+//     // Reschedule the daily update job with the new time
+//     if (JSON.stringify(daily_update_times) === JSON.stringify(update_times)){
+//         console.log("No new times to schedule")
+//     }
+//     else{
+//         daily_update_times = update_times
+//         console.log("updated times:")
+//         console.log(daily_update_times);
+//         scheduleDailyJob();
+//     }
+// }, 
+// {
+//     scheduled: true,
+//     timezone: "Asia/Karachi"
+// });
 
 // cron.schedule("00 * * * *", async () => {
 //     // Define the optimal ranges for blackberries
