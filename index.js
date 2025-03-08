@@ -18,7 +18,7 @@ let dailyJobs = [];
 
 // let phone_numbers = ["923084341993", "923200006080", "923224661550"]
 
-let phone_numbers = ["923084341993", "923200006080", "923224661550", "923334341662", "923084219892"]
+let phone_numbers = ["923084341993", "923200006080", "923224661550", "923334341662", "923084219892", "923004329358", "923015919844"]
 
 // Home Route
 app.get('/', (req, res) => {
@@ -42,7 +42,7 @@ function scheduleDailyJob() {
             // Schedule a job for each user using their specific update time
             const userJob = cron.schedule(`${min} ${hr} * * *`, () => {
                 
-                if (userId == 4 || userId == 5){
+                if (userId == 3 || userId == 6 || userId == 7){
                     console.log(`Sending daily update for user ${userId} at ${hr}:${min}`);
                     sendDailyUpdate(phone_numbers[userId - 1]);
                 }
@@ -61,50 +61,50 @@ function scheduleDailyJob() {
 
 // Initial scheduling of the daily update job
 console.log("First Schedule Call")
-// scheduleDailyJob();
+scheduleDailyJob();
 
-// // Cron job to update daily_update_time and reschedule the job
-// cron.schedule("00 01 * * *", async () => {
-//     // Update the daily_update_time dynamically
-//     async function getUpdateTimes(){
+// Cron job to update daily_update_time and reschedule the job
+cron.schedule("15 06 * * *", async () => {
+    // Update the daily_update_time dynamically
+    async function getUpdateTimes(){
         
-//         const update_times = await getAllUserUpdateTimes()
+        const update_times = await getAllUserUpdateTimes()
 
-//         let daily_update_time = {};
+        let daily_update_time = {};
 
-//         update_times.forEach((time, index) => {
-//             // Split the time into hour and minute components
-//             const [hr, min] = time.split(':');
+        update_times.forEach((time, index) => {
+            // Split the time into hour and minute components
+            const [hr, min] = time.split(':');
 
-//             // Create the entry for each user
-//             daily_update_time[index + 1] = {
-//                 hr: hr,
-//                 min: min
-//             };
-//         });
+            // Create the entry for each user
+            daily_update_time[index + 1] = {
+                hr: hr,
+                min: min
+            };
+        });
 
-//         return daily_update_time
-//     }
+        return daily_update_time
+    }
     
-//     console.log("Getting Times:")
-//     const update_times = await getUpdateTimes()
-//     console.log(update_times)
+    console.log("Getting Times:")
+    const update_times = await getUpdateTimes()
+    console.log(update_times)
 
-//     // Reschedule the daily update job with the new time
-//     if (JSON.stringify(daily_update_times) === JSON.stringify(update_times)){
-//         console.log("No new times to schedule")
-//     }
-//     else{
-//         daily_update_times = update_times
-//         console.log("updated times:")
-//         console.log(daily_update_times);
-//         scheduleDailyJob();
-//     }
-// }, 
-// {
-//     scheduled: true,
-//     timezone: "Asia/Karachi"
-// });
+    // Reschedule the daily update job with the new time
+    if (JSON.stringify(daily_update_times) === JSON.stringify(update_times)){
+        console.log("No new times to schedule")
+    }
+    else{
+        daily_update_times = update_times
+        console.log("updated times:")
+        console.log(daily_update_times);
+        scheduleDailyJob();
+    }
+}, 
+{
+    scheduled: true,
+    timezone: "Asia/Karachi"
+});
 
 // cron.schedule("00 * * * *", async () => {
 //     // Define the optimal ranges for blackberries
