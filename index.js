@@ -64,7 +64,7 @@ console.log("First Schedule Call")
 scheduleDailyJob();
 
 // Cron job to update daily_update_time and reschedule the job
-cron.schedule("13 14 * * *", async () => {
+cron.schedule("00 00 * * *", async () => {
     // Update the daily_update_time dynamically
     async function getUpdateTimes(){
         
