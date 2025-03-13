@@ -13,6 +13,8 @@ export async function sendDailyUpdate(phone) {
             apiKey: process.env.OPENAI_API_KEY,
         });
         
+        console.log(`Users phone: ${phone}`);
+        
         const { thread_id, assistant_id, id } = await getThreadID(phone);
         const user_id = id
         const language = await getLanguage(user_id);
