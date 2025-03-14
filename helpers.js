@@ -283,6 +283,3 @@ export async function sendSensorReadings(phone) {
     }
 }
 
-let records = await get10ReadingRecords()
-
-console.log(records)
