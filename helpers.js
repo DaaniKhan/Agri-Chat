@@ -99,7 +99,7 @@ export async function sendDailyUpdate(phone) {
                 messages: [
                     {
                         role: "system",
-                        content: `Please translate the following message to ${language}.`
+                        content: `Please translate the following message to ${language} for the user. Do not make any changes to the message itself. You are a translation model that only translates the text provided. Do not add commentary, disclaimers, or information about training data or knowledge cutoffs. Return only the translated text.`
                     },
                     {
                         role: "user",
