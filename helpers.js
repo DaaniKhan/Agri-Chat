@@ -66,56 +66,22 @@ export async function sendDailyUpdate(phone) {
         
         const details = await getUserDetails(user_id)
 
-        // const messageResponse = await client.chat.completions.create({
-        //     model: 'gpt-4o', 
-        //     messages: [
-        //         {
-        //             role: "system",
-        //             content: `${system_prompt}\nThe date today is ${currentDate}.\nThe User is growing ${details['crop']}.\nThe user's farmland has the following record: ${formattedRecords}.`
-        //         },
-        //         {
-        //             role: "user",
-        //             content: "What is the status of my crop?"
-        //         }
-        //     ]
-        // });
-
-        // // Access the completion response
-        // const response = messageResponse.choices[0].message.content
-
-        const message = await OPENAI_CLIENT.beta.threads.messages.create({
-            thread_id: thread_id,
-            role: "user",
-            content: "What is the status of my crop?"
+        const messageResponse = await client.chat.completions.create({
+            model: 'gpt-4o', 
+            messages: [
+                {
+                    role: "system",
+                    content: `${system_prompt}\nThe date today is ${currentDate}.\nThe User is growing ${details['crop']}.\nThe user's farmland has the following record: ${formattedRecords}.`
+                },
+                {
+                    role: "user",
+                    content: "What is the status of my crop?"
+                }
+            ]
         });
 
-        // Use OpenAI client to create and poll a thread run
-        const run = await OPENAI_CLIENT.beta.threads.runs.create_and_poll({
-            thread_id: thread_id,
-            assistant_id: assistant_id,
-            instructions: `${system_prompt}\nThe User is growing ${details['crop']}.\nThe user's farmland has the following record: ${formattedRecords}.`
-        });
-
-        let response = "";
-
-        if (run.status === 'completed') {
-            // Fetch messages from OpenAI thread
-            const messages = await OPENAI_CLIENT.beta.threads.messages.list({
-                thread_id: thread_id
-            });
-
-            response = messages.data[0].content[0].text.value;
-            console.log("response: ", response);
-
-        } else {
-            console.log(run.status);
-            return {
-                user_prompt: 'No response from the assistant',
-                original_response: 'No response from the assistant',
-                context: 'No response from the assistant',
-                'IOT Rows': 'No response from the assistant'
-            };
-        }
+        // Access the completion response
+        const response = messageResponse.choices[0].message.content
 
         console.log(`Users Language: ${language}`);
         if (language === "English") {
@@ -283,3 +249,4 @@ export async function sendSensorReadings(phone) {
     }
 }
 
+await sendDailyUpdate("923224661550")
