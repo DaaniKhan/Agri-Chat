@@ -21,13 +21,6 @@ export async function sendDailyUpdate(phone) {
 
         // Fetch reading records based on user_id
         let records = [];
-        // if (user_id === 1 || user_id === 4) {
-        //     records = await get10ReadingRecords();
-        // } else {
-        //     records = await get10ReadingRecordsByUserID(user_id);
-        // }
-
-        // records = await get10EquallySpacedReadings()
 
         records = await get10ReadingRecords()
 
@@ -39,8 +32,6 @@ export async function sendDailyUpdate(phone) {
         }
 
         const currentDate = format(new Date(), 'yyyy-MM-dd');
-
-        
 
         const system_prompt = ` 
             You are an agricultural assistant designed to help users monitor and manage their crops effectively. Users will provide sensor data like moisture, temperature, electrical conductivity, pH, nitrogen (N), phosphorus (P), and potassium (K) levels, along with the crop they're growing, such as wheat, corn, or tomatoes.
@@ -126,9 +117,11 @@ export async function sendDailyUpdate(phone) {
 }
 
 export async function sendWhatsappMessage(phone_number, message) {
+    dotenv.config();
+    
     const url = 'https://graph.facebook.com/v20.0/304854782718986/messages';  // Add the WhatsApp API URL
     const headers = {
-        'Authorization': 'Bearer EAAGI94sqL8oBO5F4uonmM0JUEZCQlZBeFtJfEWeEYX1y6UZCqNRsOiTAQye8QQNerhDxfvTA4N5BtCyvVeb6xP0MUVRVpdfR9kIGiBkkmyYSMgvMLQkdMBljyc5YYTZAa5XFAPTuZA5OzL1WBsvZCdtXWSlUGfi9QMB1b2811XJuZAoT0nKf5ZBD6AMf6uvkEUM16wZDZD',  // Add your authorization token here
+        'Authorization': process.env.WHATSAPP_BEARER,  // Add your authorization token here
         'Content-Type': 'application/json'
     };
 
@@ -248,5 +241,3 @@ export async function sendSensorReadings(phone) {
         };
     }
 }
-
-await sendDailyUpdate("923224661550")
