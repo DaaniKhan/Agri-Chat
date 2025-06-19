@@ -2,7 +2,7 @@
 
 This Node.js/Express server is a **cron-based job scheduler** that sends daily personalized agriculture updates to users via **WhatsApp**, powered by OpenAI GPT-4o and IoT sensor readings.
 
-It complements the [`Kissan Dost`](https://github.com//kissan-dost) FastAPI backend by running independently and handling time-based messaging.
+It complements the [`Kissan Dost`](https://github.com/Saad4858/Pandas) FastAPI backend by running independently and handling time-based messaging.
 
 ---
 
@@ -100,14 +100,6 @@ let phone_numbers = [
 
 ---
 
-## 🙌 Credits
-
-- 💡 Built as part of the **Kissan-Dost** ecosystem.
-- 🤖 GPT-4o integration by [OpenAI](https://openai.com)
-- 📡 Messaging via [Meta's WhatsApp Cloud API](https://developers.facebook.com/docs/whatsapp)
-
----
-
 ## 📂 Folder Structure
 
 ```bash
@@ -120,3 +112,11 @@ let phone_numbers = [
 ├── index.js             # Express server & cron scheduler
 └── .env                 # Your environment variables
 ```
+
+---
+
+## 🙌 Credits
+
+- 💡 Built as part of the **Kissan-Dost** ecosystem. ([`Kissan Dost`](https://github.com/Saad4858/Pandas)), (['Agri-Dash'](https://github.com/DaaniKhan/Agri-Dash))
+- 🤖 GPT-4o integration by [OpenAI](https://openai.com)
+- 📡 Messaging via [Meta's WhatsApp Cloud API](https://developers.facebook.com/docs/whatsapp)
